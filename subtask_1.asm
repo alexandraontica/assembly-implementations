@@ -24,9 +24,10 @@ quick_sort:
     mov ecx, [ebp + 16]
     mov edx, [ebp + 8 + 4 * ecx]
     
-    dec ebx
+    mov edi, ebx
+    dec edi
 
-    mov esi, [ebp + 12]
+    mov esi, ebx
 patition_loop:
     cmp esi, ecx
     jge end_partition_loop
@@ -34,28 +35,44 @@ patition_loop:
     cmp [ebp + 8 + 4 * esi], edx
     jg next_iteration_partition_loop
 
-    inc ebx
+    inc edi
 
     ; swap
-    mov edi, [ebp + 8 + 4 * esi]
-    mov eax, [ebp + 8 + 4 * ebx]
-    mov [ebp + 8 + 4 * esi], eax
-    mov [ebp + 8 + 4 * ebx], edi
+    ; mov ebx, [ebp + 8 + 4 * esi]
+    ; mov eax, [ebp + 8 + 4 * edi]
+    ; mov [ebp + 8 + 4 * esi], eax
+    ; mov [ebp + 8 + 4 * edi], ebx
 
 next_iteration_partition_loop:
     inc esi
     jmp patition_loop
 
 end_partition_loop:
-    inc ebx
-
+    inc edi
     ; swap
-    mov edi, [ebp + 8 + 4 * esi]
-    mov eax, [ebp + 8 + 4 * ebx]
-    mov [ebp + 8 + 4 * esi], eax
-    mov [ebp + 8 + 4 * ebx], edi
+    ; mov ebx, [ebp + 8 + 4 * ecx]
+    ; mov eax, [ebp + 8 + 4 * edi]
+    ; mov [ebp + 8 + 4 * ecx], eax
+    ; mov [ebp + 8 + 4 * edi], ebx
 
-    xor eax, eax
+    dec edi
+    mov ebx, [ebp + 12]
+    mov eax, [ebp + 8]
+
+    push edi
+    push ebx
+    push eax
+    call quick_sort
+    add esp, 12
+
+    inc edi
+    inc edi
+
+    push ecx
+    push edi
+    push eax
+    call quick_sort
+    add esp, 12
 
 end_qsort:
     ;; restore the preserved registers
