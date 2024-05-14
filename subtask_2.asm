@@ -25,7 +25,7 @@ binary_search:
 
     ; cmp start, end
     cmp eax, ebx
-    jge not_found
+    jg not_found
 
     ; (end - start) / 2
     sub ebx, eax
