@@ -15,7 +15,6 @@ binary_search:
     ; fastcall:
     ; ecx = buff
     ; edx = needle
-    mov ecx, [ecx]
     mov eax, [ebp + 8]
     mov ebx, [ebp + 12]
     cmp ebx, eax
@@ -36,6 +35,9 @@ binary_search:
     jmp end_bsearch
 
 check_left:
+    cmp eax, [ebp + 8]
+    jle not_found
+
     dec eax
     mov esi, [ebp + 8]
     push eax
@@ -44,6 +46,9 @@ check_left:
     add esp, 8
 
 check_right:
+    cmp eax, [ebp + 12]
+    jge not_found
+
     inc eax
     mov esi, [ebp + 12]
     push esi
