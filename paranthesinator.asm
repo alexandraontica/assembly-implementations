@@ -10,6 +10,7 @@ check_parantheses:
     push ebp
     mov ebp, esp
 
+    ; save the string
     mov esi, [ebp + 8]
 
     ; assume the parantheses are closed correctly
@@ -19,8 +20,9 @@ check_parantheses:
     ; if I add something to the stack, edx becomes 1
 
 check_each_character:
+    ; check if the current character is different from '\0'
     cmp byte [esi], 0
-    je end
+    je end_parantheses
 
     ; add the open parantheses to the stack
     cmp byte [esi], '('
@@ -43,6 +45,7 @@ check_each_character:
 
 add_to_stack:
     push esi
+    ; change the value in edx because something was added to the stack
     mov edx, 1
     jmp next_iteration
 
@@ -53,7 +56,8 @@ check_stack:
 
     ; when a closing parantheses is met,
     ; check if its "match" was met right before
-    ; (check if the "match" is the last charcter added to the stack)
+    ; (check if the "match" is the last 
+    ; character added to the stack)
     pop edi
     cmp byte [esi], ')'
     jne parantheses2
@@ -80,8 +84,9 @@ next_iteration:
     jmp check_each_character
 
 found_mismatch:
+    ; return 1
     mov eax, 1
 
-end:
+end_parantheses:
     leave
     ret

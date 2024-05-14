@@ -20,15 +20,18 @@ binary_search:
     ; ecx = buff
     ; edx = needle
 
+    ; save start
     mov eax, [ebp + 8]
+    ; save end
     mov ebx, [ebp + 12]
 
     ; cmp start, end
     cmp eax, ebx
     jg not_found
 
-    ; (end - start) / 2
+    ; end - start
     sub ebx, eax
+    ; (end - start) / 2
     shr ebx, 1
 
     ; mid
@@ -48,10 +51,12 @@ check_left:
     jle not_found
 
     dec eax
+    ; save start
     mov esi, [ebp + 8]
     push eax
     push esi
     call binary_search
+    ; restore the value of esp
     add esp, 8
     jmp end_bsearch
 
@@ -61,14 +66,17 @@ check_right:
     jge not_found
 
     inc eax
+    ; save end
     mov esi, [ebp + 12]
     push esi
     push eax
     call binary_search
+    ; restore the value of esp
     add esp, 8
     jmp end_bsearch
 
 not_found:
+    ; return -1
     mov eax, -1
 
 end_bsearch:
