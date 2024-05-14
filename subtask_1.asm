@@ -23,25 +23,28 @@ quick_sort:
     ; partition
     mov ecx, [ebp + 16]
     mov edx, [ebp + 8 + 4 * ecx]
+
+    mov ecx, [ebp + 8]
     
     mov edi, ebx
     dec edi
 
     mov esi, ebx
+    mov ebx, [ebp + 16]
 patition_loop:
-    cmp esi, ecx
+    cmp esi, ebx
     jge end_partition_loop
 
-    cmp [ebp + 8 + 4 * esi], edx
+    cmp [ecx + 4 * esi], edx
     jg next_iteration_partition_loop
 
     inc edi
 
     ; swap
-    ; mov ebx, [ebp + 8 + 4 * esi]
-    ; mov eax, [ebp + 8 + 4 * edi]
-    ; mov [ebp + 8 + 4 * esi], eax
-    ; mov [ebp + 8 + 4 * edi], ebx
+    push dword [ecx + 4 * esi]
+    push dword [ecx + 4 * edi]
+    pop dword [ecx + 4 * esi]
+    pop dword [ecx + 4 * edi]
 
 next_iteration_partition_loop:
     inc esi
@@ -50,27 +53,26 @@ next_iteration_partition_loop:
 end_partition_loop:
     inc edi
     ; swap
-    ; mov ebx, [ebp + 8 + 4 * ecx]
-    ; mov eax, [ebp + 8 + 4 * edi]
-    ; mov [ebp + 8 + 4 * ecx], eax
-    ; mov [ebp + 8 + 4 * edi], ebx
+    push dword [ecx + 4 * ebx]
+    push dword [ecx + 4 * edi]
+    pop dword [ecx + 4 * ebx]
+    pop dword [ecx + 4 * edi]
 
     dec edi
-    mov ebx, [ebp + 12]
-    mov eax, [ebp + 8]
+    mov eax, [ebp + 12]
 
     push edi
-    push ebx
     push eax
+    push ecx
     call quick_sort
     add esp, 12
 
     inc edi
     inc edi
 
-    push ecx
+    push ebx
     push edi
-    push eax
+    push ecx
     call quick_sort
     add esp, 12
 
