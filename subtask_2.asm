@@ -9,16 +9,23 @@ binary_search:
     enter 0, 0
 
     ;; save the preserved registers
-    pusha
+    push ebx
+    push ecx
+    push edx
+    push esi
+    push edi
 
     ;; recursive bsearch implementation goes here
     ; fastcall:
     ; ecx = buff
     ; edx = needle
+
     mov eax, [ebp + 8]
     mov ebx, [ebp + 12]
-    cmp ebx, eax
-    jl not_found
+
+    ; cmp start, end
+    cmp eax, ebx
+    jge not_found
 
     ; (end - start) / 2
     sub ebx, eax
@@ -27,14 +34,16 @@ binary_search:
     ; mid
     add eax, ebx
 
+    ; cmp buff[mid], needle
     cmp [ecx + eax * 4], edx
     jg check_left
     jl check_right
 
     ; needle == buff[mid]
-    jmp end_bsearch
+    je end_bsearch
 
 check_left:
+    ; check if mid > start
     cmp eax, [ebp + 8]
     jle not_found
 
@@ -44,8 +53,10 @@ check_left:
     push esi
     call binary_search
     add esp, 8
+    jmp end_bsearch
 
 check_right:
+    ; check if mid < end
     cmp eax, [ebp + 12]
     jge not_found
 
@@ -55,12 +66,18 @@ check_right:
     push eax
     call binary_search
     add esp, 8
+    jmp end_bsearch
 
 not_found:
     mov eax, -1
 
 end_bsearch:
     ;; restore the preserved registers
-    popa
+    pop edi
+    pop esi
+    pop edx
+    pop ecx
+    pop ebx
+
     leave
     ret
