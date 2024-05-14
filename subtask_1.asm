@@ -21,11 +21,11 @@ quick_sort:
     jge end_qsort
 
     ; partition
-    mov ecx, [ebp + 16]
-    mov edx, [ebp + 8 + 4 * ecx]
-
     mov ecx, [ebp + 8]
-    
+
+    mov eax, [ebp + 16]
+    mov edx, [ecx + 4 * eax]
+
     mov edi, ebx
     dec edi
 
