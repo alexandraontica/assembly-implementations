@@ -47,13 +47,41 @@ end_map_loop:
 
 ; int reduce(int *dst, int *src, int n, int acc_init, int(*f)(int, int));
 ; int f(int acc, int curr_elem);
-; reduce:
-;     ; look at these fancy registers
-;     push rbp
-;     mov rbp, rsp
+reduce:
+    ; look at these fancy registers
+    push rbp
+    mov rbp, rsp
 
-;     ; sa-nceapa festivalu'
+    ; sa-nceapa festivalu'
 
-;     leave
-;     ret
+    ; save *dst
+    mov rbx, [rbp + 16]
+    ; save *src
+    mov rcx, [rbp + 24]
+    ; save n
+    mov rdx, [rbp + 32]
+    ; save acc_init
+    mov rsi, [rbp + 40]
+    ; save f
+    mov rdi, [rbp + 48]
+
+    mov rax, rsi
+    
+    xor rsi, rsi
+reduce_loop:
+    cmp rsi, rdx
+    jge end_reduce_loop
+
+    mov r8, [rcx + 8 * rsi]
+    push rax
+    push r8
+    call rdi
+    add rsp, 8
+
+    inc rsi
+    jmp reduce_loop
+
+end_reduce_loop:
+    leave
+    ret
 
