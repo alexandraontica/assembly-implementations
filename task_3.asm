@@ -8,6 +8,9 @@ struc neighbours_t
                         ; A neighbour is represented by an unsigned int (dword).
 endstruc
 
+; 4 is the size of a dword/int32_t
+four equ 4
+
 section .bss
 ; Vector for keeping track of visited nodes.
 visited resd 10000
@@ -34,43 +37,62 @@ dfs:
     push ebp
     mov ebp, esp
 
+    push eax
+    push ebx
+    push ecx
+    push edx
+    push esi
+    push edi
+
     ; TODO: Implement the depth first search algorith, using the `expand`
     ; function to get the neighbours. When a node is visited, print it by
     ; calling `printf` with the format string in section .data.
 
+    ; save first arg
     mov ebx, [ebp + 8]
+    ; save second arg
     mov edx, [ebp + 12]
 
-    cmp dword [visited + 4 * ebx], 0
+    ; check if it was already visited
+    cmp dword [visited + four * ebx], 0
     jne end_dfs
 
     push ebx
     push fmt_str
     call printf
+    ; restore esp
     add esp, 8
 
-    mov dword [visited + 4 * ebx], 1
+    ; mask as visited
+    mov dword [visited + four * ebx], 1
 
     push ebx
     call expand
-    add esp, 4
-    mov edi, [eax + 4]
+    add esp, four
+    mov edi, [eax + four]
 
     xor esi, esi
 dfs_loop:
     cmp esi, [eax]
     jge end_dfs
 
-    mov ecx, [edi + 4 * esi]
+    mov ecx, [edi + four * esi]
 
     push edx
     push ecx
     call dfs
+    ; restore esp
     add esp, 8
 
     inc esi
     jmp dfs_loop
 
 end_dfs:
+    pop edi 
+    pop esi
+    pop edx
+    pop ecx
+    pop ebx
+    pop eax
     leave
     ret
