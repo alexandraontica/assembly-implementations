@@ -20,6 +20,7 @@ fmt_str db "%u", 10, 0
 section .text
 global dfs
 extern printf
+extern expand
 
 ; C function signiture:
 ;   void dfs(uint32_t node, neighbours_t *(*expand)(uint32_t node))
@@ -41,7 +42,7 @@ dfs:
     mov edx, [ebp + 12]
 
     cmp dword [visited + 4 * ebx], 0
-    je end_dfs
+    jne end_dfs
 
     push ebx
     push fmt_str
@@ -51,16 +52,16 @@ dfs:
     mov dword [visited + 4 * ebx], 1
 
     push ebx
-    call edx
+    call expand
     add esp, 4
-    mov eax, [eax]
+    mov edi, [eax + 4]
 
     xor esi, esi
 dfs_loop:
     cmp esi, [eax]
     jge end_dfs
 
-    mov ecx, [eax + 4 + 4 * esi]
+    mov ecx, [edi + 4 * esi]
 
     push edx
     push ecx
