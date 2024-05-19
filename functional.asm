@@ -44,6 +44,33 @@ end_map_loop:
     leave
     ret
 
+map:
+        test    rdx, rdx
+        jle     .L6
+        push    r14
+        mov     r14, rcx
+        push    r13
+        mov     r13, rsi
+        push    r12
+        mov     r12, rdi
+        push    rbp
+        mov     rbp, rdx
+        push    rbx
+        xor     ebx, ebx
+.L3:
+        mov     rdi, QWORD PTR [r13+0+rbx*8]
+        call    r14
+        mov     QWORD PTR [r12+rbx*8], rax
+        add     rbx, 1
+        cmp     rbp, rbx
+        jne     .L3
+        pop     rbx
+        pop     rbp
+        pop     r12
+        pop     r13
+        pop     r14
+        ret
+.L6:
 
 ; int reduce(int *dst, int *src, int n, int acc_init, int(*f)(int, int));
 ; int f(int acc, int curr_elem);
